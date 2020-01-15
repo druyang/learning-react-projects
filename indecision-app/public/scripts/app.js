@@ -13,13 +13,18 @@ var template = React.createElement(
     null,
     React.createElement(
         'h1',
-        { id: 'someID' },
+        null,
         app.title
+    ),
+    app.subtitle && React.createElement(
+        'p',
+        null,
+        app.subtitle
     ),
     React.createElement(
         'p',
         null,
-        app.subtitle
+        app.options.length > 0 ? "There are options" : "No Options"
     ),
     React.createElement(
         'ol',
@@ -74,4 +79,4 @@ var templateTwo = React.createElement(
 );
 
 var appRoot = document.getElementById('app');
-ReactDOM.render(templateTwo, appRoot);
+ReactDOM.render(template, appRoot);
