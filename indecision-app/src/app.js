@@ -22,7 +22,7 @@ const template = (
     <div>
         <h1>{app.title}</h1>
         {(app.subtitle) && <p>{app.subtitle}</p>}
-        <p>{app.options.length>0 ? "There are options" : "No Options"}</p>
+        <p>{app.options.length>0 ? "There are options {}" : "No Options"}</p>
         <p>{app.options.length}</p>
         <ol>
             <li>Item 1</li>
@@ -40,6 +40,7 @@ const removeAll = () => {
     renderApp();
 }
 
+
 const renderApp = () => {
     
     const template = (
@@ -50,8 +51,11 @@ const renderApp = () => {
             <p>{app.options.length}</p>
             <button onClick={removeAll}>Remove All</button>
             <ol>
-                <li>Item 1</li>
-                <li>Item 2</li>
+                {
+                    app.options.map((option) => {
+                        return <li key={option}>Option: {option}</li>                   
+                    })
+                }
             </ol>
             <form onSubmit={onFormSubmit}>
                 <input type = "text" name = "task"/> 

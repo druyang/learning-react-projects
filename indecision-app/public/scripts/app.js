@@ -36,7 +36,7 @@ var template = React.createElement(
     React.createElement(
         'p',
         null,
-        app.options.length > 0 ? "There are options" : "No Options"
+        app.options.length > 0 ? "There are options {}" : "No Options"
     ),
     React.createElement(
         'p',
@@ -107,16 +107,14 @@ var renderApp = function renderApp() {
         React.createElement(
             'ol',
             null,
-            React.createElement(
-                'li',
-                null,
-                'Item 1'
-            ),
-            React.createElement(
-                'li',
-                null,
-                'Item 2'
-            )
+            app.options.map(function (option) {
+                return React.createElement(
+                    'li',
+                    { key: option },
+                    'Option: ',
+                    option
+                );
+            })
         ),
         React.createElement(
             'form',
