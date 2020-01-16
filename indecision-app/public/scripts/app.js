@@ -1,31 +1,137 @@
 'use strict';
 
-var square = function square(x) {
-    return x * x;
+console.log('App.js is running!');
+
+var app = {
+    title: 'Indecision App',
+    subtitle: 'Put your life in the hands of a computer',
+    options: []
 };
-console.log(square(8));
 
-var divide = function divide(num, denom) {
-    return num / denom;
-};
-console.log(divide(3, 1));
+var onFormSubmit = function onFormSubmit(e) {
+    e.preventDefault();
 
-// Arrow function expression syntax: 
-var divideArrow = function divideArrow(num, denom) {
-    return num / denom;
-}; // implicitly returned
-console.log(divideArrow(4, 2));
+    var option = e.target.elements.task.value;
 
-var fullName = 'Andrw Yang';
-
-var getFullName = function getFullName(name) {
-    if (name) {
-        return name.split(' ')[0];
+    if (option) {
+        app.options.push(option);
+        e.target.elements.task.value = '';
+        renderApp();
     }
 };
-console.log(getFullName("Andrew Yang"));
 
-var getFullNameArrow = function getFullNameArrow(name) {
-    return name ? name.split(' ')[0] : "";
+var template = React.createElement(
+    'div',
+    null,
+    React.createElement(
+        'h1',
+        null,
+        app.title
+    ),
+    app.subtitle && React.createElement(
+        'p',
+        null,
+        app.subtitle
+    ),
+    React.createElement(
+        'p',
+        null,
+        app.options.length > 0 ? "There are options" : "No Options"
+    ),
+    React.createElement(
+        'p',
+        null,
+        app.options.length
+    ),
+    React.createElement(
+        'ol',
+        null,
+        React.createElement(
+            'li',
+            null,
+            'Item 1'
+        ),
+        React.createElement(
+            'li',
+            null,
+            'Item 2'
+        )
+    ),
+    React.createElement(
+        'form',
+        { onSubmit: onFormSubmit },
+        React.createElement('input', { type: 'text', name: 'task' }),
+        React.createElement(
+            'button',
+            null,
+            'Add text'
+        )
+    )
+);
+
+var removeAll = function removeAll() {
+    app.options = [];
+    renderApp();
 };
-console.log(getFullNameArrow("Andrw Yang"));
+
+var renderApp = function renderApp() {
+
+    var template = React.createElement(
+        'div',
+        null,
+        React.createElement(
+            'h1',
+            null,
+            app.title
+        ),
+        app.subtitle && React.createElement(
+            'p',
+            null,
+            app.subtitle
+        ),
+        React.createElement(
+            'p',
+            null,
+            app.options.length > 0 ? "There are options" : "No Options"
+        ),
+        React.createElement(
+            'p',
+            null,
+            app.options.length
+        ),
+        React.createElement(
+            'button',
+            { onClick: removeAll },
+            'Remove All'
+        ),
+        React.createElement(
+            'ol',
+            null,
+            React.createElement(
+                'li',
+                null,
+                'Item 1'
+            ),
+            React.createElement(
+                'li',
+                null,
+                'Item 2'
+            )
+        ),
+        React.createElement(
+            'form',
+            { onSubmit: onFormSubmit },
+            React.createElement('input', { type: 'text', name: 'task' }),
+            React.createElement(
+                'button',
+                null,
+                'Add text'
+            )
+        )
+    );
+
+    ReactDOM.render(template, appRoot);
+};
+
+var appRoot = document.getElementById('app');
+renderApp();
