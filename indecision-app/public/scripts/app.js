@@ -8,8 +8,39 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Header = function (_React$Component) {
-    _inherits(Header, _React$Component);
+// Nested React Components 
+var TaskApp = function (_React$Component) {
+    _inherits(TaskApp, _React$Component);
+
+    function TaskApp() {
+        _classCallCheck(this, TaskApp);
+
+        return _possibleConstructorReturn(this, (TaskApp.__proto__ || Object.getPrototypeOf(TaskApp)).apply(this, arguments));
+    }
+
+    _createClass(TaskApp, [{
+        key: 'render',
+        value: function render() {
+            var title = 'To Do List:';
+            var subtitle = 'Stop fucking procrastinating';
+            var options = ['Thing one', 'Thing two', 'Thing three'];
+
+            return React.createElement(
+                'div',
+                null,
+                React.createElement(Header, { title: title, subtitle: subtitle }),
+                React.createElement(Action, null),
+                React.createElement(Options, { options: options }),
+                React.createElement(AddOption, null)
+            );
+        }
+    }]);
+
+    return TaskApp;
+}(React.Component);
+
+var Header = function (_React$Component2) {
+    _inherits(Header, _React$Component2);
 
     function Header() {
         _classCallCheck(this, Header);
@@ -28,12 +59,12 @@ var Header = function (_React$Component) {
                 React.createElement(
                     'h1',
                     null,
-                    ' To Do:'
+                    this.props.title
                 ),
                 React.createElement(
                     'h2',
                     null,
-                    ' Stop fucking procrastinating'
+                    this.props.subtitle
                 )
             );
         }
@@ -42,8 +73,8 @@ var Header = function (_React$Component) {
     return Header;
 }(React.Component);
 
-var Action = function (_React$Component2) {
-    _inherits(Action, _React$Component2);
+var Action = function (_React$Component3) {
+    _inherits(Action, _React$Component3);
 
     function Action() {
         _classCallCheck(this, Action);
@@ -52,6 +83,11 @@ var Action = function (_React$Component2) {
     }
 
     _createClass(Action, [{
+        key: 'handleClick',
+        value: function handleClick() {
+            alert('handleClick');
+        }
+    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
@@ -59,7 +95,7 @@ var Action = function (_React$Component2) {
                 null,
                 React.createElement(
                     'button',
-                    null,
+                    { onClick: this.handleClick },
                     ' What should I do?'
                 )
             );
@@ -72,8 +108,49 @@ var Action = function (_React$Component2) {
 // options
 
 
-var Option = function (_React$Component3) {
-    _inherits(Option, _React$Component3);
+var Options = function (_React$Component4) {
+    _inherits(Options, _React$Component4);
+
+    function Options() {
+        _classCallCheck(this, Options);
+
+        return _possibleConstructorReturn(this, (Options.__proto__ || Object.getPrototypeOf(Options)).apply(this, arguments));
+    }
+
+    _createClass(Options, [{
+        key: 'handleRemoveAll',
+        value: function handleRemoveAll() {
+            alert('test');
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return React.createElement(
+                'div',
+                null,
+                React.createElement(
+                    'button',
+                    { onClick: this.handleRemoveAll },
+                    'Remove All'
+                ),
+                React.createElement(
+                    'ol',
+                    null,
+                    this.props.options.map(function (option) {
+                        return React.createElement(Option, { key: option, optionText: option });
+                    })
+                )
+            );
+        }
+    }]);
+
+    return Options;
+}(React.Component);
+
+// Option  
+
+var Option = function (_React$Component5) {
+    _inherits(Option, _React$Component5);
 
     function Option() {
         _classCallCheck(this, Option);
@@ -88,9 +165,9 @@ var Option = function (_React$Component3) {
                 'div',
                 null,
                 React.createElement(
-                    'p',
+                    'li',
                     null,
-                    'Options Here'
+                    this.props.optionText
                 )
             );
         }
@@ -98,11 +175,16 @@ var Option = function (_React$Component3) {
 
     return Option;
 }(React.Component);
+
+// Text input and submit button 
+// onSubmit 
+// handleAddOption -> takes value type -> throws in array
+
 // addoption 
 
 
-var AddOption = function (_React$Component4) {
-    _inherits(AddOption, _React$Component4);
+var AddOption = function (_React$Component6) {
+    _inherits(AddOption, _React$Component6);
 
     function AddOption() {
         _classCallCheck(this, AddOption);
@@ -128,12 +210,4 @@ var AddOption = function (_React$Component4) {
     return AddOption;
 }(React.Component);
 
-var jsx = React.createElement(
-    'div',
-    null,
-    React.createElement(Header, null),
-    React.createElement(Action, null),
-    React.createElement(Option, null),
-    React.createElement(AddOption, null)
-);
-ReactDOM.render(jsx, document.getElementById('app'));
+ReactDOM.render(React.createElement(TaskApp, null), document.getElementById('app'));
