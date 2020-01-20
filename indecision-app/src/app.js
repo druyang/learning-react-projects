@@ -1,16 +1,41 @@
 // Nested React Components 
 class TaskApp extends React.Component { 
+    constructor(props) {
+        super(props);
+        this.handeDeleteOptions = this.handeDeleteOptions.bind(this);
+        this.handlepick = this.handlePick.bind(this);
+        this.state = {
+            options: ['Thing one', 'Thing two', 'Thing three']
+        };
+    }
+    handeDeleteOptions(){ 
+        this.setState(() => {
+            return {
+                options: []
+            };
+        });
+    }
+    handlePick() { 
+        this.setState(() => {
+            return { 
+                options: [...prevState.options, ]
+            }
+        })
+    }
     render() { 
         const title = 'To Do List:';
         const subtitle = 'Stop fucking procrastinating'; 
-        const options = ['Thing one', 'Thing two', 'Thing three'];
 
         return ( 
             <div>
                 
                 <Header title = {title} subtitle={subtitle} /> 
-                <Action />
-                <Options options = {options}/>
+                <Action hasOptions={this.state.options.length > 0} />
+                <Options
+                    options = {this.state.options}
+                    handleDeleteOptions = {this.handeDeleteOptions}
+                    optionHandlePick = 
+                />
                 <AddOption />
             </div>
         )
@@ -37,7 +62,10 @@ class Action extends React.Component {
     render() {
         return (
             <div> 
-                <button onClick = {this.handleClick}> What should I do?</button>
+                <button 
+                    onClick = {this.handleClick}
+                    disabled = {!this.props.hasOptions}
+            > What should I do?</button>
             </div>
         );
     }
@@ -45,21 +73,18 @@ class Action extends React.Component {
 
 // options
 class Options extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleRemoveAll = this.handleRemoveAll.bind(this);
-    }
-    handleRemoveAll(){
-        alert(this.props.options);
-    }
     render(){
     return (
         <div>
-        <button onClick={this.handleRemoveAll}>Remove All</button>
+        <button onClick={this.props.handleDeleteOptions}>Remove All</button>
         <ol>
         {
             this.props.options.map((option) => 
-            <Option key={option} optionText = {option}/>)
+            <Option 
+                key={option} 
+                optionText = {option} 
+                optionHandlePick = {this.props.optionHandlePick}
+            />)
         }
         </ol>
         </div>
@@ -73,7 +98,10 @@ class Option extends React.Component {
     render(){
         return (
             <div> 
-                <li>{this.props.optionText}</li>
+                <li>
+                    {this.props.optionText}
+                    <button onClick={this.props.handlePick}>x</button>
+                </li>
             </div>
         );
     }
