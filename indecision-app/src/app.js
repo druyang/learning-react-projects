@@ -2,41 +2,65 @@
 class TaskApp extends React.Component { 
     constructor(props) {
         super(props);
-        this.handeDeleteOptions = this.handeDeleteOptions.bind(this);
-        this.handlepick = this.handlePick.bind(this);
+        this.handlePick = this.handlePick.bind(this);
+        this.handleDeleteTasks = this.handleDeleteTasks.bind(this);
+        this.handleAddTask = this.handleAddTask.bind(this);
+        this.handleRemoveTask = this.handleRemoveTask.bind(this);
         this.state = {
-            options: ['Thing one', 'Thing two', 'Thing three']
+            tasks: []
         };
     }
-    handeDeleteOptions(){ 
+    handleDeleteTasks() {
         this.setState(() => {
-            return {
-                options: []
+            return{
+                tasks: []
             };
         });
     }
-    handlePick() { 
-        this.setState(() => {
+    handleAddTask(task) {
+        if (!task) { 
+            return 'Enter valid value'
+        } else if (this.state.tasks.indexOf(task) > -1) { 
+            return 'Enter unique task'
+        }
+        this.setState((prevState) => { 
             return { 
-                options: [...prevState.options, ]
+                tasks: prevState.tasks.concat([task])
             }
-        })
+        });
     }
+    handlePick() { 
+       const randNum = Math.floor(Math.random() * this.state.tasks.length);
+       alert(this.state.tasks[randNum])
+    }
+
+    handleRemoveTask(id) { 
+        this.setState(prevState => ({
+                tasks: prevState.tasks.filter(task => task !== id)
+            })
+        );
+    }
+
     render() { 
         const title = 'To Do List:';
         const subtitle = 'Stop fucking procrastinating'; 
 
-        return ( 
+        return (
             <div>
                 
                 <Header title = {title} subtitle={subtitle} /> 
-                <Action hasOptions={this.state.options.length > 0} />
-                <Options
-                    options = {this.state.options}
-                    handleDeleteOptions = {this.handeDeleteOptions}
-                    optionHandlePick = 
+                <Action 
+                    hasTasks={this.state.tasks.length > 0} 
+                    handlePick = {this.handlePick}
                 />
-                <AddOption />
+                <Tasks
+                    tasks = {this.state.tasks}
+                    handleDeleteTasks = {this.handleDeleteTasks}
+                    handleRemoveTask = {this.handleRemoveTask}
+                />
+                <AddTask 
+                    handleAddTask={this.handleAddTask}
+                />
             </div>
         )
     }
@@ -55,35 +79,31 @@ class Header extends React.Component {
 }
 
 class Action extends React.Component {
-    handleClick(){
-        alert('handleClick');
-    }
-
     render() {
         return (
             <div> 
                 <button 
-                    onClick = {this.handleClick}
-                    disabled = {!this.props.hasOptions}
+                    onClick = {this.props.handlePick}
+                    disabled = {!this.props.hasTasks}
             > What should I do?</button>
             </div>
         );
     }
 }
 
-// options
-class Options extends React.Component {
+// tasks
+class Tasks extends React.Component {
     render(){
     return (
         <div>
-        <button onClick={this.props.handleDeleteOptions}>Remove All</button>
+        <button onClick={this.props.handleDeleteTasks}>Remove All</button>
         <ol>
         {
-            this.props.options.map((option) => 
-            <Option 
-                key={option} 
-                optionText = {option} 
-                optionHandlePick = {this.props.optionHandlePick}
+            this.props.tasks.map((task) => 
+            <Task 
+                key={task} 
+                taskText = {task} 
+                handleRemoveTask = {this.props.handleRemoveTask}
             />)
         }
         </ol>
@@ -92,15 +112,15 @@ class Options extends React.Component {
     }
 }
 
-// Option  
+// Task  
 
-class Option extends React.Component {
+class Task extends React.Component {
     render(){
         return (
             <div> 
                 <li>
-                    {this.props.optionText}
-                    <button onClick={this.props.handlePick}>x</button>
+                    {this.props.taskText}
+                    <button onClick = {() => {this.props.handleRemoveTask(this.props.taskText)}} > x </button>
                 </li>
             </div>
         );
@@ -109,22 +129,33 @@ class Option extends React.Component {
 
 // Text input and submit button 
 // onSubmit 
-// handleAddOption -> takes value type -> throws in array
+// handleAddTask -> takes value type -> throws in array
 
-// addoption 
-class AddOption extends React.Component {
+// addtask 
+class AddTask extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleAddTask = this.handleAddTask.bind(this)
+        this.state = { 
+            error: undefined
+        }
+    }
     handleAddTask(e) {
         e.preventDefault(); 
         
-        const option = e.target.elements.task.value.trim(); 
+        const task = e.target.elements.task.value.trim(); 
+        const error = this.props.handleAddTask(task);
 
-        if (option) {
-            alert(option)
-        }
+        this.setState(() => {
+            return {
+                error
+            }
+        })
     }
     render(){
         return (
             <div>
+            {this.state.error && <p>{this.state.error}</p>}
             <form onSubmit = {this.handleAddTask}>
                 <input type = "text" name = "task" />
                 <button>Add task</button>

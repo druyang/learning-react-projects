@@ -17,25 +17,56 @@ var TaskApp = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (TaskApp.__proto__ || Object.getPrototypeOf(TaskApp)).call(this, props));
 
-        _this.handeDeleteOptions = _this.handeDeleteOptions.bind(_this);
+        _this.handlePick = _this.handlePick.bind(_this);
+        _this.handleDeleteTasks = _this.handleDeleteTasks.bind(_this);
+        _this.handleAddTask = _this.handleAddTask.bind(_this);
+        _this.handleRemoveTask = _this.handleRemoveTask.bind(_this);
         _this.state = {
-            options: ['Thing one', 'Thing two', 'Thing three']
+            tasks: []
         };
         return _this;
     }
 
     _createClass(TaskApp, [{
-        key: 'handeDeleteOptions',
-        value: function handeDeleteOptions() {
+        key: 'handleDeleteTasks',
+        value: function handleDeleteTasks() {
             this.setState(function () {
                 return {
-                    options: []
+                    tasks: []
+                };
+            });
+        }
+    }, {
+        key: 'handleAddTask',
+        value: function handleAddTask(task) {
+            if (!task) {
+                return 'Enter valid value';
+            } else if (this.state.tasks.indexOf(task) > -1) {
+                return 'Enter unique task';
+            }
+            this.setState(function (prevState) {
+                return {
+                    tasks: prevState.tasks.concat([task])
                 };
             });
         }
     }, {
         key: 'handlePick',
-        value: function handlePick() {}
+        value: function handlePick() {
+            var randNum = Math.floor(Math.random() * this.state.tasks.length);
+            alert(this.state.tasks[randNum]);
+        }
+    }, {
+        key: 'handleRemoveTask',
+        value: function handleRemoveTask(id) {
+            this.setState(function (prevState) {
+                return {
+                    tasks: prevState.tasks.filter(function (task) {
+                        return task !== id;
+                    })
+                };
+            });
+        }
     }, {
         key: 'render',
         value: function render() {
@@ -46,12 +77,18 @@ var TaskApp = function (_React$Component) {
                 'div',
                 null,
                 React.createElement(Header, { title: title, subtitle: subtitle }),
-                React.createElement(Action, { hasOptions: this.state.options.length > 0 }),
-                React.createElement(Options, {
-                    options: this.state.options,
-                    handleDeleteOptions: this.handeDeleteOptions
+                React.createElement(Action, {
+                    hasTasks: this.state.tasks.length > 0,
+                    handlePick: this.handlePick
                 }),
-                React.createElement(AddOption, null)
+                React.createElement(Tasks, {
+                    tasks: this.state.tasks,
+                    handleDeleteTasks: this.handleDeleteTasks,
+                    handleRemoveTask: this.handleRemoveTask
+                }),
+                React.createElement(AddTask, {
+                    handleAddTask: this.handleAddTask
+                })
             );
         }
     }]);
@@ -103,11 +140,6 @@ var Action = function (_React$Component3) {
     }
 
     _createClass(Action, [{
-        key: 'handleClick',
-        value: function handleClick() {
-            alert('handleClick');
-        }
-    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
@@ -116,8 +148,8 @@ var Action = function (_React$Component3) {
                 React.createElement(
                     'button',
                     {
-                        onClick: this.handleClick,
-                        disabled: !this.props.hasOptions
+                        onClick: this.props.handlePick,
+                        disabled: !this.props.hasTasks
                     },
                     ' What should I do?'
                 )
@@ -128,103 +160,122 @@ var Action = function (_React$Component3) {
     return Action;
 }(React.Component);
 
-// options
+// tasks
 
 
-var Options = function (_React$Component4) {
-    _inherits(Options, _React$Component4);
+var Tasks = function (_React$Component4) {
+    _inherits(Tasks, _React$Component4);
 
-    function Options() {
-        _classCallCheck(this, Options);
+    function Tasks() {
+        _classCallCheck(this, Tasks);
 
-        return _possibleConstructorReturn(this, (Options.__proto__ || Object.getPrototypeOf(Options)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (Tasks.__proto__ || Object.getPrototypeOf(Tasks)).apply(this, arguments));
     }
 
-    _createClass(Options, [{
+    _createClass(Tasks, [{
         key: 'render',
         value: function render() {
+            var _this5 = this;
+
             return React.createElement(
                 'div',
                 null,
                 React.createElement(
                     'button',
-                    { onClick: this.props.handleDeleteOptions },
+                    { onClick: this.props.handleDeleteTasks },
                     'Remove All'
                 ),
                 React.createElement(
                     'ol',
                     null,
-                    this.props.options.map(function (option) {
-                        return React.createElement(Option, { key: option, optionText: option });
+                    this.props.tasks.map(function (task) {
+                        return React.createElement(Task, {
+                            key: task,
+                            taskText: task,
+                            handleRemoveTask: _this5.props.handleRemoveTask
+                        });
                     })
                 )
             );
         }
     }]);
 
-    return Options;
+    return Tasks;
 }(React.Component);
 
-// Option  
+// Task  
 
-var Option = function (_React$Component5) {
-    _inherits(Option, _React$Component5);
+var Task = function (_React$Component5) {
+    _inherits(Task, _React$Component5);
 
-    function Option() {
-        _classCallCheck(this, Option);
+    function Task() {
+        _classCallCheck(this, Task);
 
-        return _possibleConstructorReturn(this, (Option.__proto__ || Object.getPrototypeOf(Option)).apply(this, arguments));
+        return _possibleConstructorReturn(this, (Task.__proto__ || Object.getPrototypeOf(Task)).apply(this, arguments));
     }
 
-    _createClass(Option, [{
+    _createClass(Task, [{
         key: 'render',
         value: function render() {
+            var _this7 = this;
+
             return React.createElement(
                 'div',
                 null,
                 React.createElement(
                     'li',
                     null,
-                    this.props.optionText,
+                    this.props.taskText,
                     React.createElement(
                         'button',
-                        { onClick: this.props.handeDeleteOptions },
-                        'x'
+                        { onClick: function onClick() {
+                                _this7.props.handleRemoveTask(_this7.props.taskText);
+                            } },
+                        ' x '
                     )
                 )
             );
         }
     }]);
 
-    return Option;
+    return Task;
 }(React.Component);
 
 // Text input and submit button 
 // onSubmit 
-// handleAddOption -> takes value type -> throws in array
+// handleAddTask -> takes value type -> throws in array
 
-// addoption 
+// addtask 
 
 
-var AddOption = function (_React$Component6) {
-    _inherits(AddOption, _React$Component6);
+var AddTask = function (_React$Component6) {
+    _inherits(AddTask, _React$Component6);
 
-    function AddOption() {
-        _classCallCheck(this, AddOption);
+    function AddTask(props) {
+        _classCallCheck(this, AddTask);
 
-        return _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).apply(this, arguments));
+        var _this8 = _possibleConstructorReturn(this, (AddTask.__proto__ || Object.getPrototypeOf(AddTask)).call(this, props));
+
+        _this8.handleAddTask = _this8.handleAddTask.bind(_this8);
+        _this8.state = {
+            error: undefined
+        };
+        return _this8;
     }
 
-    _createClass(AddOption, [{
+    _createClass(AddTask, [{
         key: 'handleAddTask',
         value: function handleAddTask(e) {
             e.preventDefault();
 
-            var option = e.target.elements.task.value.trim();
+            var task = e.target.elements.task.value.trim();
+            var error = this.props.handleAddTask(task);
 
-            if (option) {
-                alert(option);
-            }
+            this.setState(function () {
+                return {
+                    error: error
+                };
+            });
         }
     }, {
         key: 'render',
@@ -232,6 +283,11 @@ var AddOption = function (_React$Component6) {
             return React.createElement(
                 'div',
                 null,
+                this.state.error && React.createElement(
+                    'p',
+                    null,
+                    this.state.error
+                ),
                 React.createElement(
                     'form',
                     { onSubmit: this.handleAddTask },
@@ -246,7 +302,7 @@ var AddOption = function (_React$Component6) {
         }
     }]);
 
-    return AddOption;
+    return AddTask;
 }(React.Component);
 
 ReactDOM.render(React.createElement(TaskApp, null), document.getElementById('app'));
